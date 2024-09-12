@@ -1,0 +1,50 @@
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container">
+      <%= company_name %>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0 d-flex justify-content-center w-75">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/service/notice">Notice</a>
+          </li>
+          <% 
+          // 그룹화된 메뉴 저장
+          const groupedMenus = {};
+          menu.forEach(item => {
+              if (!groupedMenus[item.main_menu]) {
+                  groupedMenus[item.main_menu] = [];
+              }
+              let menuObj = {menu_name : item.sub_menu, service_code : item.service_code}
+              groupedMenus[item.main_menu].push(menuObj);
+
+              //console.log(groupedMenus)
+          });
+          %>
+
+          <% Object.keys(groupedMenus).forEach(main_menu => { %>
+              <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="<%= main_menu.replace(' ', '_') %>" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      <%= main_menu %>
+                  </a>
+                  <ul class="dropdown-menu" aria-labelledby="<%= main_menu.replace(' ', '_') %>">
+                      <% groupedMenus[main_menu].forEach(item => { %>
+                          <li><a class="dropdown-item" href="/service/<%= item.service_code %>"><%= item.menu_name %></a></li>
+                      <% }); %>
+                  </ul>
+              </li>
+          <% }); %>
+          <!-- <li class="nav-item">
+            <a class="nav-link active" href="/logout">logout</a>
+          </li> -->
+        </ul>
+        <div>
+          user : <%=user.user_name %>
+        </div>
+        <div class="ms-5">
+          <a class="nav-link active" href="/logout">logout</a>
+        </div>
+      </div>
+    </div>
+  </nav>

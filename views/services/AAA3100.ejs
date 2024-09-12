@@ -1,0 +1,210 @@
+<link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+<script src="https://uicdn.toast.com/tui-grid/latest/tui-grid.js"></script>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // 데이터 정의
+        const data = [
+            { menu_id: 1, menu_name: 'Main cat1', up_menu_id: 0, level: 1, order: 100 },
+            { menu_id: 2, menu_name: 'Main cat2', up_menu_id: 0, level: 1, order: 200 },
+            { menu_id: 3, menu_name: 'Main cat3', up_menu_id: 0, level: 1, order: 300 },
+            { menu_id: 4, menu_name: 'Sub cat1', up_menu_id: 1, level: 2, order: 1100, service_code: 'AAA1100' },
+            { menu_id: 5, menu_name: 'Sub cat2', up_menu_id: 1, level: 2, order: 1200, service_code: 'AAA1200' },
+            { menu_id: 6, menu_name: 'Sub cat3', up_menu_id: 1, level: 2, order: 1300, service_code: 'AAA1300' },
+            { menu_id: 7, menu_name: 'Sub cat4', up_menu_id: 2, level: 2, order: 2100, service_code: 'AAA2100' },
+            { menu_id: 8, menu_name: 'Sub cat5', up_menu_id: 2, level: 2, order: 2200, service_code: 'AAA2200' },
+            { menu_id: 9, menu_name: 'Sub cat6', up_menu_id: 3, level: 2, order: 3100, service_code: 'AAA3100' },
+            { menu_id: 10, menu_name: 'Sub cat7', up_menu_id: 3, level: 2, order: 3200, service_code: 'AAA3200' },
+        ];
+
+        const sampleData = [
+            {
+                "name": "Observables",
+                "artist": "Object",
+                // "_attributes": {
+                //     "expanded": true
+                // },
+                "_children": [
+                    {
+                        "name": "Zeta Functions",
+                        "artist": "Function",
+                        // "_attributes": {
+                        //     "expanded": true
+                        // },
+                        "_children": [
+                            {
+                                "name": "Riemann Zeta Function",
+                                "artist": "Function"
+                            },
+                            {
+                                "name": "Weierstrass Zeta Function",
+                                "artist": "Function"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Gamma Functions",
+                        "artist": "Function",
+                        // "_attributes": {
+                        //     "expanded": false
+                        // },
+                        "_children": [
+                            {
+                                "name": "Euler's Gamma Function",
+                                "artist": "Function"
+                            },
+                            {
+                                "name": "Stirling's Approximation",
+                                "artist": "Formula"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "name": "Random Variables",
+                "artist": "Object",
+                // "_attributes": {
+                //     "expanded": false
+                // },
+                "_children": [
+                    {
+                        "name": "Discrete Random Variable",
+                        "artist": "Object"
+                    },
+                    {
+                        "name": "Continuous Random Variable",
+                        "artist": "Object"
+                    }
+                ]
+            },
+            {
+                "name": "Special Functions",
+                "artist": "Object",
+                // "_attributes": {
+                //     "expanded": false
+                // },
+                "_children": [
+                    {
+                        "name": "Legendre Polynomials",
+                        "artist": "Function"
+                    },
+                    {
+                        "name": "Laguerre Polynomials",
+                        "artist": "Function"
+                    },
+                    {
+                        "name": "Hermite Polynomials",
+                        "artist": "Function"
+                    }
+                ]
+            }
+        ]
+
+
+        // toast grid tree sample
+
+        window.grid = new tui.Grid({
+            el: document.getElementById('grid'),
+            // data: sampleData,
+            data: {
+                api: {
+                    readData: { url: '/service/common/callMenu', method: 'POST' }
+                }
+            },
+            rowHeaders: ['checkbox'],
+            bodyHeight: 500,
+            treeColumnOptions: {
+                name: 'menu_name',
+                useCascadingCheckbox: true
+            },
+            columns: [
+                {
+                    header: 'Menu ID'
+                    , name: 'menu_id'
+                    , editor: 'text'
+                    , width: 65
+                    , align: 'center'
+                },
+                {
+                    header: 'Menu Name',
+                    name: 'menu_name',
+                    editor: 'text'
+                },
+                {
+                    header: 'UP Menu ID'
+                    , name: 'up_menu_id'
+                    , editor: 'text'
+                    , width: 85
+                    , align: 'center'
+                },
+                {
+                    header: 'Service Code',
+                    name: 'service_code',
+                    editor: 'text'
+                },
+                {
+                    header: 'Level'
+                    , name: 'level_no'
+                    // , editor: 'text'
+                    , width: 85
+                    , align: 'center'
+                },
+                {
+                    header: 'Order'
+                    , name: 'order_no'
+                    , editor: 'text'
+                    , width: 85
+                    , align: 'center'
+                },
+                {
+                    header: 'Hierarchy Path'
+                    , name: 'hierarchy_path'
+                    , editor: 'text'
+                    , width: 500
+                }
+            ]
+        });
+
+        grid.on('expand', ev => {
+            const { rowKey } = ev;
+            const descendantRows = grid.getDescendantRows(rowKey);
+
+            console.log('rowKey: ' + rowKey);
+            console.log('descendantRows: ' + descendantRows);
+
+            if (!descendantRows.length) {
+                grid.appendRow(
+                    {
+                        name: 'dynamic loading data',
+                        _children: [
+                            {
+                                name: 'leaf row'
+                            },
+                            {
+                                name: 'internal row',
+                                _children: []
+                            }
+                        ]
+                    },
+                    { parentRowKey: rowKey }
+                );
+            }
+        });
+
+        grid.on('collapse', ev => {
+            const { rowKey } = ev;
+            const descendantRows = grid.getDescendantRows(rowKey);
+
+            console.log('rowKey: ' + rowKey);
+            console.log('descendantRows: ' + descendantRows);
+        });
+
+    });
+
+</script>
+
+<body>
+    <div id="grid"></div>
+</body>

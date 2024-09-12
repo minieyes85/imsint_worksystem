@@ -1,0 +1,63 @@
+<script>
+  $(document).ready(async function () {
+
+    // let data = await serviceCall('main', 'test')
+    // console.log(data)
+    // $('#target').html(`
+    //                         ${data}
+    //                     `);
+
+    let notice_data = await dbCall('notice', 'readList', {})
+    let notice_columns = [
+      {
+        title: 'Title', data: 'title'
+        // ,render: function (data, type, row, meta) {
+        //   return '<a href="/user/' + row.id + '">' + data + '</a>';
+        // }
+      },
+      { title: 'User', data: 'user_name' },
+      { title: 'Date', data: 'date' }
+    ]
+
+
+    let targetTable = $('#targetTable').DataTable({
+      searching: false,
+      paging: false,
+      scrollY: 500,
+      ordering: false,
+      data: notice_data,
+      columns: notice_columns
+    })
+
+    // Title 열을 클릭했을 때 팝업을 띄우는 이벤트 핸들러
+    $('#targetTable tbody').on('click', 'td:first-child', function () {
+      let data = targetTable.row(this).data();  // 클릭한 행의 데이터 가져오기
+      //alert(`Title:${data.title}, ID: ${data.id}`);      // 팝업에 타이틀 표시
+
+      const url = `/popup/notice/${data.id}`; // 팝업으로 열릴 주소
+      const popupWidth = 1000;
+      const popupHeight = 800;
+
+      // 화면 가운데에 팝업을 열도록 위치 계산
+      const left = (screen.width - popupWidth) / 2;
+      const top = (screen.height - popupHeight) / 2;
+
+      // 팝업 창 열기
+      window.open(
+          url,
+          'popupWindow',
+          `width=${popupWidth},height=${popupHeight},top=${top},left=${left},scrollbars=yes,resizable=yes`
+      );
+
+    });
+
+
+  })
+
+
+</script>
+<h1>Notice</h1>
+<div id="target"></div>
+<div>
+  <table id="targetTable"></table>
+</div>
