@@ -22,9 +22,11 @@ export class Menu {
   @Column()
   order_no: number;
 
-  @Column()
+  @Column({nullable: true})
   service_code: string;
 
-  @Column()
+  @Column({nullable: true})
   note: string;
+
+  _children?: Menu[];
 }

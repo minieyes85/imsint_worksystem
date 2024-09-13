@@ -1,13 +1,26 @@
-import { Body, Controller, Get, Post, Render, Session } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Render,
+  Session,
+  Res,
+  HttpStatus,
+  Redirect,
+} from '@nestjs/common';
 import { CreateUserDto } from '../dtos/create-user.dto';
 import { UserService } from '../services/user.service';
 import { AuthService } from '../services/auth.service';
+import { Response } from 'express';
+import { MenuService } from '../services/menu.service';
 
 @Controller('common')
 export class CommonController {
   constructor(
     private userService: UserService,
     private authService: AuthService,
+    private menuService: MenuService,
   ) {}
   //   @Get()
   //   @Render('index')
@@ -16,22 +29,37 @@ export class CommonController {
   //   }
 
   @Get('signin')
-  @Render('signin')
-  signInPage() {
-    return {};
+  signInPage(@Res() res: Response) {
+    res.render('signin', { layout: false });
   }
 
   @Post('signin')
-  async signin(@Body() body: CreateUserDto, @Session() session: any){
+  async signin(
+    @Body() body: CreateUserDto,
+    @Session() session: any,
+    @Res() res: Response,
+  ) {
     const user = await this.authService.signin(body.email, body.password);
     session.userId = user.id;
-    return user;
+    session.user = user;
+
+    // menu info
+
+    session.menu = await this.menuService.loadMenu();
+
+    console.log(session.menu);
+
+
+
+
+
+
+    return res.redirect('/')
   }
 
   @Get('signup')
-  @Render('signup')
-  signUpPage() {
-    return {};
+  signUpPage(@Res() res: Response) {
+    res.render('signup', { layout: false });
   }
 
   @Post('signup')
@@ -44,6 +72,14 @@ export class CommonController {
     );
     session.userId = user.id;
 
-    return {user};
+    return { user };
+  }
+
+  @Get('/signout')
+  @Redirect('/')
+  signOut(@Session() session: any, @Res() res: Response){
+    session.userId = null;
+    session.user = null;
+    return;
   }
 }

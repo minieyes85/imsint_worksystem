@@ -7,9 +7,10 @@ import { UserService } from './services/user.service';
 import { AuthService } from './services/auth.service';
 import { User } from './entities/user.entity';
 import { CurrentUserMiddleware } from './middleware/current-user.middleware';
+import { Menu } from './entities/menu.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User])],
+  imports: [TypeOrmModule.forFeature([User, Menu])],
   controllers: [CommonController, MainController],
   providers: [MenuService, UserService, AuthService],
 })
