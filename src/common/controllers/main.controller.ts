@@ -19,7 +19,7 @@ export class MainController {
   }
 
   @Get('notice')
-  mainPage(@Session() session: any, @Res() res: Response) {
+  noticePage(@Session() session: any, @Res() res: Response) {
 
     const renderObj: PageRenderDto = {};
     renderObj.layout = "layouts/layoutService";
@@ -28,5 +28,17 @@ export class MainController {
     renderObj.user = session.user;
 
     res.render("services/notice", renderObj)
+  }
+
+  @Get('menu')
+  menuPage(@Session() session: any, @Res() res: Response) {
+
+    const renderObj: PageRenderDto = {};
+    renderObj.layout = "layouts/layoutService";
+    renderObj.company_name  = this.configService.get("COMPANY_NAME");
+    renderObj.menu = session.menu;
+    renderObj.user = session.user;
+
+    res.render("services/menu", renderObj)
   }
 }

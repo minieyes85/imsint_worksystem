@@ -16,4 +16,22 @@
             return {};  // 오류 발생 시 빈 객체 반환
         }
     }
+
+    async function commonCall(type, call_id, params) {
+        try {
+            const response = await fetch(`/common/${call_id}`, {
+                method: type,
+                headers: {
+                    'Content-Type': 'application/json'  // JSON 형식으로 데이터를 보낸다고 명시
+                },
+                body: JSON.stringify(params)  // 파라미터를 JSON 문자열로 변환하여 전송
+            });
+
+            const data = await response.json();
+            return data;  // 응답 데이터를 반환
+        } catch (error) {
+            console.error('Error:', error);
+            return {};  // 오류 발생 시 빈 객체 반환
+        }
+    }
 </script>

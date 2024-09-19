@@ -49,12 +49,7 @@ export class CommonController {
 
     console.log(session.menu);
 
-
-
-
-
-
-    return res.redirect('/')
+    return res.redirect('/');
   }
 
   @Get('signup')
@@ -75,11 +70,16 @@ export class CommonController {
     return { user };
   }
 
-  @Get('/signout')
+  @Get('signout')
   @Redirect('/')
-  signOut(@Session() session: any, @Res() res: Response){
+  signOut(@Session() session: any, @Res() res: Response) {
     session.userId = null;
     session.user = null;
     return;
+  }
+
+  @Post('menu')
+  loadMenu() {
+    return this.menuService.loadMenu();
   }
 }

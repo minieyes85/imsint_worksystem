@@ -88,4 +88,9 @@ export class MenuService {
     // .andWhere('m2.level_no = :subLevel', { subLevel: 2 })
     // .getRawMany();
   }
+
+  async loadMenuData() {
+    
+    return;
+  }
 }
