@@ -40,7 +40,8 @@ export class MenuService {
           ON 
               m.up_id = mh.id
       )
-      SELECT * FROM MenuHierarchy;
+      SELECT * FROM MenuHierarchy
+      ORDER BY order_no;
     `;
     const result = await this.menuRepo.query(query);
 

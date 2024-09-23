@@ -23,7 +23,7 @@
             <% const mainMenuObj = menu.find(m => m.title === main_menu); %> <!-- 상위 메뉴 객체 가져오기 -->
 
             <li class="nav-item <%= hasChildren ? 'dropdown' : 'link' %>">
-              <a class="nav-link <%= hasChildren ? 'dropdown-toggle' : '' %>" 
+              <a class="nav-link ms-3 me-3 <%= hasChildren ? 'dropdown-toggle' : '' %>" 
                 href="<%= hasChildren ? '#' : '/service/' + mainMenuObj.service_code %>"
                 id="<%= main_menu.replace(' ', '_') %>"
                 role="button"

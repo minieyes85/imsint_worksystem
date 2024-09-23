@@ -17,6 +17,8 @@ import { MenuService } from '../services/menu.service';
 import { NoticeService } from '../services/notice.service';
 import { noticeListDto } from '../dtos/notice-list.dto';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
+import { PageRenderDto } from '../dtos/page-render.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('common')
 export class CommonController {
@@ -25,6 +27,7 @@ export class CommonController {
     private authService: AuthService,
     private menuService: MenuService,
     private noticeService: NoticeService,
+    private configService: ConfigService,
   ) {}
   //   @Get()
   //   @Render('index')
@@ -33,8 +36,15 @@ export class CommonController {
   //   }
 
   @Get('signin')
-  signInPage(@Res() res: Response) {
-    res.render('signin', { layout: false });
+  signInPage(
+    @Session() session: any,
+    @Res() res: Response) {
+
+    const renderObj: PageRenderDto = {};
+    renderObj.layout = "";
+    renderObj.company_name  = this.configService.get("COMPANY_NAME");
+
+    res.render('signin', renderObj);
   }
 
   @Post('signin')
@@ -51,7 +61,7 @@ export class CommonController {
 
     session.menu = await this.menuService.loadMenu();
 
-    console.log(session.menu);
+    // console.log(session.menu);
 
     return res.redirect('/');
   }

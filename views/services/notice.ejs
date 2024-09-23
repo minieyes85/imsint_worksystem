@@ -1,3 +1,10 @@
+<style>
+  /* 셀 내용에서 줄바꿈을 허용하는 스타일 */
+  .tui-grid-cell-content {
+    white-space: pre-wrap; /* 줄바꿈 허용 */
+  }
+</style>
+
 <script>
   $(document).ready(async function () {
 
@@ -8,10 +15,13 @@
     window.grid = new tui.Grid({
       el: document.getElementById("grid"),
       columns: [
-        { header: 'Title', name: 'title', width: 100, align: 'center' },
-        { header: 'User', name: 'user_name', align: 'center' },
-        { header: 'Date', name: 'updatedAt', align: 'center' },
-      ]
+        { header: 'Date', name: 'updatedAt', width: 130, align: 'center', formatter: function({value}){return formatDate(value);}},
+        { header: 'User', name: 'user_name', width: 100, align: 'center' },
+        { header: 'Title', name: 'title', width: 150, align: 'left' },
+        { header: 'Content', name: 'content', align: 'left' },
+      ],
+      rowHeight: 'auto', // 행 높이를 자동으로 설정
+      bodyHeight: 'fitToParent' // 그리드 높이를 컨테이너에 맞게 설정
     });
 
     grid.resetData(notice_data);

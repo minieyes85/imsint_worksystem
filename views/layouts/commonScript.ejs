@@ -34,4 +34,16 @@
             return {};  // 오류 발생 시 빈 객체 반환
         }
     }
+
+    // 날짜 형식 포맷터 함수
+    function formatDate(value) {
+      const date = new Date(value);
+      // 원하는 포맷으로 변환 (예: YYYY-MM-DD HH:mm:ss)
+      return date.getFullYear()
+            + '-' + ('0' + (date.getMonth() + 1)).slice(-2)
+            + '-' + ('0' + date.getDate()).slice(-2)
+            + ' ' + ('0' + date.getHours()).slice(-2)
+            + ':' + ('0' + date.getMinutes()).slice(-2)
+            // + ':' + ('0' + date.getSeconds()).slice(-2);
+    }
 </script>
