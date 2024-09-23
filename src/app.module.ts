@@ -22,6 +22,7 @@ const cookieSession = require('cookie-session');
     WorkModule,
   ],
   controllers: [AppController],
+  providers: [],
 })
 export class AppModule {
   constructor(

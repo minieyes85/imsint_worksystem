@@ -8,11 +8,13 @@ import { AuthService } from './services/auth.service';
 import { User } from './entities/user.entity';
 import { CurrentUserMiddleware } from './middleware/current-user.middleware';
 import { Menu } from './entities/menu.entity';
+import { NoticeService } from './services/notice.service';
+import { Notice } from './entities/notice.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Menu])],
+  imports: [TypeOrmModule.forFeature([User, Menu, Notice])],
   controllers: [CommonController, MainController],
-  providers: [MenuService, UserService, AuthService],
+  providers: [MenuService, UserService, AuthService, NoticeService],
 })
 export class CommonModule {
   configure(consumer: MiddlewareConsumer) {

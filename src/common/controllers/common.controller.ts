@@ -14,6 +14,9 @@ import { UserService } from '../services/user.service';
 import { AuthService } from '../services/auth.service';
 import { Response } from 'express';
 import { MenuService } from '../services/menu.service';
+import { NoticeService } from '../services/notice.service';
+import { noticeListDto } from '../dtos/notice-list.dto';
+import { Serialize } from 'src/interceptors/serialize.interceptor';
 
 @Controller('common')
 export class CommonController {
@@ -21,6 +24,7 @@ export class CommonController {
     private userService: UserService,
     private authService: AuthService,
     private menuService: MenuService,
+    private noticeService: NoticeService,
   ) {}
   //   @Get()
   //   @Render('index')
@@ -82,4 +86,13 @@ export class CommonController {
   loadMenu() {
     return this.menuService.loadMenu();
   }
+
+  @Post('notice')
+  @Serialize(noticeListDto)
+  listNotice() {
+    return this.noticeService.loadListNotice()
+  }
+
+
+
 }

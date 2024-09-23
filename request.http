@@ -1,0 +1,7 @@
+### notice list
+POST http://localhost:3000/common/notice HTTP/1.1
+Content-Type: application/json
+
+{
+    
+}

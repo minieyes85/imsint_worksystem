@@ -1,42 +1,35 @@
 import {
-    AfterInsert,
-    AfterUpdate,
     Entity,
     Column,
     PrimaryGeneratedColumn,
-    BeforeRemove,
-    OneToMany,
+    ManyToOne
   } from 'typeorm';
-import { Notice } from './notice.entity';
+  import { User } from './user.entity';
   
   @Entity()
-  export class User {
+  export class Notice {
     @PrimaryGeneratedColumn()
     id: number;
   
     @Column()
-    email: string;
+    title: string;
   
     @Column()
-    password: string;
+    is_pinned: boolean;
   
     @Column()
-    name: string;
+    content: string;
 
-    @Column({ default: 1 })
-    class: number;
-    // admin 1, manager 2, user 3
-    // default 3
-    // in dev default 1
+    @ManyToOne(() => User, (user) => user.notices)
+    user: User;
 
-    @Column({ nullable: true})
-    path_onedrive: string;
+    // createdAt 필드의 기본값을 현재 시간으로 설정
+    @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+    createdAt: Date;
 
-    @Column({ nullable: true})
-    memo: string;
-
-    @OneToMany(() => Notice, (notice) => notice.user)
-    notices: Notice[];
+    // updatedAt 필드도 기본값 설정 및 업데이트 시 자동 갱신
+    @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
+    updatedAt: Date;
     
     // @Column({ default: true})
     // admin: boolean;

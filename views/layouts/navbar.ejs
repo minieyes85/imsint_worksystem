@@ -7,31 +7,44 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0 d-flex justify-content-center w-75">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="/service/notice">Notice</a>
+            <a class="nav-link active" aria-current="page" href="/notice">Notice</a>
           </li>
-            <% // 데이터 그룹화 작업을 위한 로직 (메인 메뉴와 서브 메뉴)
-            const groupedMenus={}; menu.forEach(mainMenu=> {
-            groupedMenus[mainMenu.title] = mainMenu._children || []; // 상위 메뉴에 자식 메뉴가 있으면 그룹화
-            });
-            %>
 
-            <% Object.keys(groupedMenus).forEach(main_menu=> { %>
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="<%= main_menu.replace(' ', '_') %>" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  <%= main_menu %>
-                </a>
+          
+          <% // 데이터 그룹화 작업을 위한 로직 (메인 메뉴와 서브 메뉴)
+          const groupedMenus = {};
+          menu.forEach(mainMenu => {
+            groupedMenus[mainMenu.title] = mainMenu._children || []; // 상위 메뉴에 자식 메뉴가 있으면 그룹화
+          });
+          %>
+
+          <% Object.keys(groupedMenus).forEach(main_menu => { %>
+            <% const hasChildren = groupedMenus[main_menu].length > 0; %>
+            <% const mainMenuObj = menu.find(m => m.title === main_menu); %> <!-- 상위 메뉴 객체 가져오기 -->
+
+            <li class="nav-item <%= hasChildren ? 'dropdown' : 'link' %>">
+              <a class="nav-link <%= hasChildren ? 'dropdown-toggle' : '' %>" 
+                href="<%= hasChildren ? '#' : '/service/' + mainMenuObj.service_code %>"
+                id="<%= main_menu.replace(' ', '_') %>"
+                role="button"
+                <% if (hasChildren) { %> data-bs-toggle="dropdown" aria-expanded="false" <% } %>>
+                <%= main_menu %>
+              </a>
+
+              <% if (hasChildren) { %>
                 <ul class="dropdown-menu" aria-labelledby="<%= main_menu.replace(' ', '_') %>">
-                  <% groupedMenus[main_menu].forEach(subMenu=> { %>
+                  <% groupedMenus[main_menu].forEach(subMenu => { %>
                     <li>
                       <a class="dropdown-item" href="/service/<%= subMenu.service_code %>">
                         <%= subMenu.title %>
                       </a>
                     </li>
-                    <% }); %>
+                  <% }); %>
                 </ul>
-              </li>
-              <% }); %>
-                <!-- <li class="nav-item">
+              <% } %>
+            </li>
+          <% }); %>
+          <!-- <li class="nav-item">
             <a class="nav-link active" href="/logout">logout</a>
           </li> -->
         </ul>
