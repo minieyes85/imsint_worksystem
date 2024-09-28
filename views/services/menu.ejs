@@ -1,57 +1,70 @@
 <script>
-    $(document).ready(async function () {
-  
-      let menu_data = await commonCall('post', 'menu', {})
-      let notice_columns = [
-        {
-          title: 'Title', data: 'title'
-        },
-        { title: 'User', data: 'user_name' },
-        { title: 'Date', data: 'date' }
+  document.addEventListener('DOMContentLoaded', async function () {
+
+    let menu_data = await commonCall('post', 'menu', {})
+
+    console.log(menu_data)
+
+    window.grid = new tui.Grid({
+      el: document.getElementById('grid'),
+      rowHeaders: ['checkbox'],
+      bodyHeight: 500,
+      treeColumnOptions: {
+        name: 'title',
+        useCascadingCheckbox: true
+      },
+      columns: [
+        { header: 'Menu ID', name: 'id', editor: 'text', width: 65, align: 'center' },
+        { header: 'Menu Name', name: 'title', editor: 'text' },
+        { header: 'UP Menu ID', name: 'up_id', editor: 'text', width: 85, align: 'center' },
+        { header: 'Service Code', name: 'service_code', editor: 'text' },
+        // { header: 'Level', name: 'level_no', width: 85, align: 'center' },
+        { header: 'Order', name: 'order_no', editor: 'text', width: 85, align: 'center' },
+        { header: 'Hierarchy Path', name: 'hierarchy', editor: 'text', width: 500 }
       ]
+    });
 
-      console.log(menu_data)
-  
-  
-      let targetTable = $('#targetTable').DataTable({
-        searching: false,
-        paging: false,
-        scrollY: 500,
-        ordering: false,
-        data: menu_data,
-        columns: notice_columns
-      })
-  
-    //   $('#targetTable tbody').on('click', 'td:first-child', function () {
-    //     let data = targetTable.row(this).data();  // 클릭한 행의 데이터 가져오기
-    //     //alert(`Title:${data.title}, ID: ${data.id}`);      // 팝업에 타이틀 표시
-  
-    //     const url = `/popup/notice/${data.id}`; // 팝업으로 열릴 주소
-    //     const popupWidth = 1000;
-    //     const popupHeight = 800;
-  
-    //     // 화면 가운데에 팝업을 열도록 위치 계산
-    //     const left = (screen.width - popupWidth) / 2;
-    //     const top = (screen.height - popupHeight) / 2;
-  
-    //     // 팝업 창 열기
-    //     window.open(
-    //         url,
-    //         'popupWindow',
-    //         `width=${popupWidth},height=${popupHeight},top=${top},left=${left},scrollbars=yes,resizable=yes`
-    //     );
-  
-    //   });
-  
-  
-    })
-  
-  
-  </script>
+    grid.resetData(menu_data);
+
+    grid.on('expand', ev => {
+      const { rowKey } = ev;
+      const descendantRows = grid.getDescendantRows(rowKey);
+
+      console.log('rowKey: ' + rowKey);
+      console.log('descendantRows: ' + descendantRows);
+
+      if (!descendantRows.length) {
+        grid.appendRow(
+          {
+            name: 'dynamic loading data',
+            _children: [
+              {
+                name: 'leaf row'
+              },
+              {
+                name: 'internal row',
+                _children: []
+              }
+            ]
+          },
+          { parentRowKey: rowKey }
+        );
+      }
+    });
+
+    grid.on('collapse', ev => {
+      const { rowKey } = ev;
+      const descendantRows = grid.getDescendantRows(rowKey);
+
+      console.log('rowKey: ' + rowKey);
+      console.log('descendantRows: ' + descendantRows);
+    });
+  })
+
+</script>
 
 
-<h1>Menu</h1>
-<div id="target"></div>
-<div>
-  <table id="targetTable"></table>
-</div>
+<body>
+  <h1>Menu</h1>
+  <div id="grid"></div>
+</body>

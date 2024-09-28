@@ -27,6 +27,9 @@ export class Menu {
 
   @Column({nullable: true})
   note: string;
+  
+  hierarchy?: string;
 
   _children?: Menu[];
+
 }

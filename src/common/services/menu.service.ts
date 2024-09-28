@@ -45,39 +45,75 @@ export class MenuService {
     `;
     const result = await this.menuRepo.query(query);
 
+    // function buildTree(data: Menu[]): Menu[] {
+    //     const tree: Menu[] = [];
+    //     const map: { [key: number]: Menu } = {};
+      
+    //     // 각 메뉴 항목을 맵에 저장하여 빠르게 부모-자식 연결할 수 있도록 함
+    //     data.forEach((item) => {
+    //       map[item.id] = { ...item, _children: [] };
+    //     });
+      
+    //     // 각 메뉴의 부모를 찾아 _children에 추가
+    //     data.forEach((item) => {
+    //       if (item.up_id !== 0) {
+    //         if (map[item.up_id]) {
+    //           map[item.up_id]._children!.push(map[item.id]);
+    //         }
+    //       } else {
+    //         tree.push(map[item.id]);
+    //       }
+    //     });
+      
+    //     // _children 배열이 비어 있으면 해당 속성을 삭제
+    //     function removeEmptyChildren(node: Menu) {
+    //       if (node._children && node._children.length === 0) {
+    //         delete node._children;
+    //       } else if (node._children) {
+    //         node._children.forEach(removeEmptyChildren);
+    //       }
+    //     }
+      
+    //     tree.forEach(removeEmptyChildren);
+      
+    //     return tree;
+    //   }
+
     function buildTree(data: Menu[]): Menu[] {
-        const tree: Menu[] = [];
-        const map: { [key: number]: Menu } = {};
-      
-        // 각 메뉴 항목을 맵에 저장하여 빠르게 부모-자식 연결할 수 있도록 함
-        data.forEach((item) => {
-          map[item.id] = { ...item, _children: [] };
-        });
-      
-        // 각 메뉴의 부모를 찾아 _children에 추가
-        data.forEach((item) => {
+      const tree: Menu[] = [];
+      const map: { [key: number]: Menu } = {};
+  
+      // 각 메뉴 항목을 맵에 저장하여 빠르게 부모-자식 연결할 수 있도록 함
+      data.forEach((item) => {
+          map[item.id] = { ...item, _children: [], hierarchy: item.title }; // 초기 hierarchy를 title로 설정
+      });
+  
+      // 각 메뉴의 부모를 찾아 _children에 추가
+      data.forEach((item) => {
           if (item.up_id !== 0) {
-            if (map[item.up_id]) {
-              map[item.up_id]._children!.push(map[item.id]);
-            }
+              if (map[item.up_id]) {
+                  map[item.up_id]._children!.push(map[item.id]);
+                  // 부모의 hierarchy에 현재 아이템의 title을 덧붙임
+                  map[item.id].hierarchy = `${map[item.up_id].hierarchy} > ${map[item.id].title}`;
+              }
           } else {
-            tree.push(map[item.id]);
+              tree.push(map[item.id]); // 루트 노드는 hierarchy를 그대로 유지
           }
-        });
-      
-        // _children 배열이 비어 있으면 해당 속성을 삭제
-        function removeEmptyChildren(node: Menu) {
+      });
+  
+      // _children 배열이 비어 있으면 해당 속성을 삭제
+      function removeEmptyChildren(node: Menu) {
           if (node._children && node._children.length === 0) {
-            delete node._children;
+              delete node._children;
           } else if (node._children) {
-            node._children.forEach(removeEmptyChildren);
+              node._children.forEach(removeEmptyChildren);
           }
-        }
-      
-        tree.forEach(removeEmptyChildren);
-      
-        return tree;
       }
+  
+      tree.forEach(removeEmptyChildren);
+  
+      return tree;
+  }
 
 
     return buildTree(result);
